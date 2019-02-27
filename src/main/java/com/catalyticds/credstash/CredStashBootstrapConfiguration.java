@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.CompositePropertySource;
@@ -80,6 +81,7 @@ public class CredStashBootstrapConfiguration implements PropertySourceLocator {
     @Bean
     @ConditionalOnProperty(prefix = "credstash", name = "encryptor.secret.name")
     @ConditionalOnMissingBean
+    @RefreshScope
     public CredStashTextEncryptor credStashTextEncryptor(
             @Value("${credstash.encryptor.secret.name}") String secret,
             @Value("${credstash.encryptor.secret.version:}") String version) {

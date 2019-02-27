@@ -1,6 +1,7 @@
 package com.catalyticds.credstash;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 /**
  * @author reesbyars on 9/22/17.
  */
+@RefreshScope
 @ConfigurationProperties(prefix = "credstash")
 class CredStashProperties extends CredStashPropertyConfig {
 
