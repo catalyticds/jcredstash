@@ -2,26 +2,23 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.9.6"
     }
-}
-
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'java'
-apply plugin: 'idea'
-
-group = 'com.catalyticds'
-version = '0.1.0'
-
-jar {
-    baseName = rootProject.name
 }
 
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
 
 description = """Spring Cloud CredStash"""
 
@@ -30,7 +27,7 @@ targetCompatibility = 1.8
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.boot:spring-boot-starter-parent:1.5.8.RELEASE'
+        mavenBom 'org.springframework.boot:spring-boot-starter-parent:1.5.22.RELEASE'
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4'
     }
 }
@@ -63,4 +60,38 @@ dependencies {
     testCompile 'com.amazonaws:aws-java-sdk-kms'
     testCompile 'com.amazonaws:aws-java-sdk-dynamodb'
 
+}
+
+jar {
+    baseName = rootProject.name
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+artifactory {
+    contextUrl = "${artifactory_url}/artifactory"
+    publish {
+        repository {
+            repoKey = 'catalytic-java-libs' // The Artifactory repository key to publish to
+            username = "${artifactory_user}" // The publisher user name
+            password = "${artifactory_password}" // The publisher password
+        }
+        defaults {
+            // Reference to Gradle publications defined in the build script.
+            // This is how we tell the Artifactory Plugin which artifacts should be
+            // published to Artifactory.
+            publications('mavenJava')
+            publishArtifacts = true
+            // Properties to be attached to the published artifacts.
+            properties = ['source.category': 'open', 'owner' : 'catalytic']
+            // Publish generated POM files to Artifactory (true by default)
+            publishPom = true
+        }
+    }
 }
