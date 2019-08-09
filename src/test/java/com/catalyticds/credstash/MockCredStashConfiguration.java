@@ -1,7 +1,5 @@
 package com.catalyticds.credstash;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.kms.AWSKMS;
 import com.amazonaws.util.IOUtils;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
@@ -27,14 +25,6 @@ public class MockCredStashConfiguration {
 
     @Bean @Primary CredStash credStash() {
         return mock(CredStash.class);
-    }
-
-    @Bean AmazonDynamoDB amazonDynamoDB() {
-        return mock(AmazonDynamoDB.class);
-    }
-
-    @Bean AWSKMS awskms() {
-        return mock(AWSKMS.class);
     }
 
     @PostConstruct
